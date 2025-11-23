@@ -26,6 +26,17 @@ Syntax highlighting for the Loci DSL used to describe rules, data dependencies, 
 - The grammar ships with this extension (`syntaxes/loci.tmlLanguage.json`); no extra configuration is required.
 - Colors come from your current VS Code theme; this extension just provides scopes.
 
+## Package a VSIX (share/install locally)
+- Use Node 20+ (new `vsce` requires the global `File` API). If you must stay on Node 18, use `npx @vscode/vsce@2.21.0 package`.
+- Install deps and build, then package:
+```bash
+npm install
+npm run compile
+npx @vscode/vsce package
+```
+- This produces `loci-syntax-<version>.vsix` in the repo root. Install it with `code --install-extension loci-syntax-*.vsix`.
+- If `vsce` warns about a missing `repository` field, add your Git repo URL to `package.json` (recommended) or pass `--allow-missing-repository`.
+
 ## Customize Loci colors (no GUI clicking)
 - Open your user settings JSON directly (no UI): run `Preferences: Open User Settings (JSON)` from the Command Palette, or edit the file on disk:
   - Linux: `$HOME/.config/Code/User/settings.json`
