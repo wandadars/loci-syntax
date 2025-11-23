@@ -10,8 +10,9 @@ Syntax highlighting for the Loci DSL used to describe rules, data dependencies, 
 - Loci scopes run first; unmatched content falls back to the built-in C++ grammar (especially inside `{ ... }` blocks) so mixed Loci/C++ stays readable without losing DSL highlighting.
 
 ## Install
-1. Install dependencies: `npm install`
-2. Build: `npm run compile` (or `npm run watch` while developing)
+- Prereqs: Node.js 20+ (needed for current `@vscode/vsce`), npm. If you’re stuck on Node 18, pin `npx @vscode/vsce@2.21.0 package` for packaging.
+1. After cloning: `npm install`
+2. Build once: `npm run compile` (or `npm run watch` while developing)
 3. Package (optional): `npx @vscode/vsce package` then `code --install-extension loci-syntax-*.vsix`
 4. Or run in an Extension Development Host with `F5` from VS Code.
 
@@ -20,6 +21,7 @@ Syntax highlighting for the Loci DSL used to describe rules, data dependencies, 
 - Press `Run and Debug` (or F5) and pick **Run Extension**; a new Extension Development Host window opens with the Loci syntax loaded.
 - Open a `.loci` file there (e.g., from `/home/wandadar/software/loci/...`) and confirm the status bar shows **Loci DSL**.
 - Colors come from your current VS Code theme; this extension just provides scopes.
+- Faster dev loop: in the main VS Code window run `npm install` once, then `npm run watch` to keep TypeScript output fresh. In another window use F5 to reload the Extension Development Host; hit the reload button there after edits to pick up grammar/TS changes.
 
 ## Use
 - Open a `.loci` file; VS Code should select **Loci DSL** automatically. If not, switch the language mode manually.
