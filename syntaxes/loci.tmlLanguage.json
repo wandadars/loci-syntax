@@ -1,0 +1,225 @@
+{
+  "scopeName": "source.loci",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#includes" },
+    { "include": "#ruleDecl" },
+    { "include": "#typeDecl" },
+    { "include": "#dollarIdentifiers" },
+    { "include": "#cppBlock" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.double-slash.loci", "match": "//.*$" },
+        { "name": "comment.block.loci", "begin": "/\\*", "end": "\\*/" }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.loci",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "name": "constant.character.escape.loci", "match": "\\\\." }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.loci",
+          "match": "\\b-?(?:0x[0-9A-Fa-f]+|\\d+\\.\\d*(?:[eE][+-]?\\d+)?|\\d+(?:[eE][+-]?\\d+)?|\\.\\d+(?:[eE][+-]?\\d+)?)\\b"
+        }
+      ]
+    },
+    "includes": {
+      "patterns": [
+        {
+          "name": "meta.preprocessor.include.system.loci",
+          "match": "^\\s*(#\\s*include)\\b\\s*(<[^>]+>|\"[^\"]+\")",
+          "captures": {
+            "1": { "name": "keyword.control.import.include.c" },
+            "2": { "name": "string.quoted.other.include.loci" }
+          }
+        },
+        {
+          "name": "meta.preprocessor.include.loci",
+          "match": "^\\s*(\\$include)\\s+(\"[^\"]+\")",
+          "captures": {
+            "1": { "name": "keyword.control.import.loci" },
+            "2": { "name": "string.quoted.double.loci" }
+          }
+        }
+      ]
+    },
+    "ruleDecl": {
+      "patterns": [
+        {
+          "name": "meta.rule.loci",
+          "begin": "(\\$rule)",
+          "beginCaptures": {
+            "1": { "name": "keyword.control.rule-statement.loci" }
+          },
+          "end": "(?=\\{)",
+          "patterns": [
+            {
+              "name": "support.function.rule-kind.loci",
+              "match": "\\b(pointwise|singleton|apply|unit|optional|default|constraint)\\b"
+            },
+            {
+              "name": "meta.rule.head.loci",
+              "begin": "\\(",
+              "beginCaptures": { "0": { "name": "punctuation.section.parens.begin.loci" } },
+              "end": "\\)",
+              "endCaptures": { "0": { "name": "punctuation.section.parens.end.loci" } },
+              "patterns": [
+                {
+                  "name": "meta.rule.output.loci",
+                  "match": "([A-Za-z_][A-Za-z0-9_]*)(?:\\{[^}]*\\})?(?:\\([^)]*\\))?(?=\\s*(<-ci->|<-|->))",
+                  "captures": {
+                    "1": { "name": "entity.name.function.rule-output.loci" }
+                  }
+                },
+                {
+                  "name": "meta.rule.input.loci",
+                  "match": "(?<=<-|->)\\s*([A-Za-z_][A-Za-z0-9_]*)(?:\\{[^}]*\\})?(?:\\([^)]*\\))?",
+                  "captures": {
+                    "1": { "name": "variable.parameter.rule-input.loci" }
+                  }
+                },
+                {
+                  "name": "keyword.operator.assignment.rightmost.loci",
+                  "match": "(<-ci->|<-)(?![^)]*(<-ci->|<-))"
+                },
+                {
+                  "name": "keyword.operator.assignment.loci",
+                  "match": "<-ci->|<-|->"
+                },
+                {
+                  "name": "keyword.operator.arrow.loci",
+                  "match": "<-ci->|ci->|<-|->"
+                },
+                {
+                  "name": "meta.rule.placeholders.loci",
+                  "begin": "\\(",
+                  "beginCaptures": { "0": { "name": "punctuation.section.parens.begin.loci" } },
+                  "end": "\\)",
+                  "endCaptures": { "0": { "name": "punctuation.section.parens.end.loci" } },
+                  "patterns": [
+                    { "name": "variable.parameter.rule-input.loci", "match": "[A-Za-z_][A-Za-z0-9_]*" },
+                    { "name": "punctuation.separator.delimiter.loci", "match": "," }
+                  ]
+                },
+                { "name": "variable.other.rule-head.loci", "match": "[A-Za-z_][A-Za-z0-9_]*" },
+                { "name": "punctuation.separator.delimiter.loci", "match": "," }
+              ]
+            },
+            {
+              "name": "meta.rule.neighbor-map.loci",
+              "begin": "\\b(ci|cr|cl)\\s*(->)\\s*\\(",
+              "beginCaptures": {
+                "1": { "name": "variable.language.neighbor-prefix.loci" },
+                "2": { "name": "keyword.operator.arrow.loci" },
+                "0": { "name": "punctuation.section.parens.begin.loci" }
+              },
+              "end": "\\)",
+              "endCaptures": {
+                "0": { "name": "punctuation.section.parens.end.loci" }
+              },
+              "patterns": [
+                {
+                  "name": "variable.parameter.rule-input.loci",
+                  "match": "[A-Za-z_][A-Za-z0-9_]*"
+                },
+                {
+                  "name": "punctuation.separator.delimiter.loci",
+                  "match": ","
+                }
+              ]
+            },
+            {
+              "name": "meta.rule.modifier.loci",
+              "begin": ",\\s*((option|constraint))\\s*\\(",
+              "beginCaptures": {
+                "1": { "name": "keyword.control.modifier.loci" },
+                "2": { "name": "keyword.control.modifier.loci" }
+              },
+              "end": "\\)",
+              "endCaptures": { "0": { "name": "punctuation.section.parens.end.loci" } },
+              "patterns": [
+                { "name": "variable.parameter.rule-input.loci", "match": "[A-Za-z_][A-Za-z0-9_]*" },
+                { "name": "punctuation.separator.delimiter.loci", "match": "," }
+              ]
+            },
+            {
+              "name": "keyword.control.block.loci",
+              "match": ",\\s*(prelude|compute)\\b"
+            },
+            { "name": "punctuation.separator.delimiter.loci", "match": "," },
+            {
+              "name": "meta.rule.decorator.brackets.loci",
+              "begin": "\\[",
+              "beginCaptures": { "0": { "name": "punctuation.section.brackets.begin.loci" } },
+              "end": "\\]",
+              "endCaptures": { "0": { "name": "punctuation.section.brackets.end.loci" } },
+              "patterns": [
+                { "include": "source.cpp" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "typeDecl": {
+      "patterns": [
+        {
+          "name": "meta.type.loci",
+          "match": "^\\s*(\\$type)\\s+([A-Za-z_][A-Za-z0-9_]*)(?:\\(\\s*([A-Za-z_][A-Za-z0-9_]*(?:\\s*,\\s*[A-Za-z_][A-Za-z0-9_]*)*)\\s*\\))?\\s+((?:const_)?(?:store|param|multiMap|Map|blackbox))\\s*<([^>]+)>",
+          "captures": {
+            "1": { "name": "keyword.declaration.loci" },
+            "2": { "name": "entity.name.type.loci" },
+            "3": { "name": "variable.parameter.placeholder.loci" },
+            "4": { "name": "storage.type.loci" },
+            "5": { "name": "support.type.loci" }
+          }
+        }
+      ]
+    },
+    "dollarIdentifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.dollar.loci",
+          "match": "\\$(?!rule\\b|type\\b|include\\b)[A-Za-z_][A-Za-z0-9_]*"
+        }
+      ]
+    },
+    "cppBlock": {
+      "patterns": [
+        {
+          "name": "meta.embedded.block.cpp",
+          "begin": "\\{",
+          "beginCaptures": { "0": { "name": "punctuation.section.block.begin.loci" } },
+          "end": "\\}",
+          "endCaptures": { "0": { "name": "punctuation.section.block.end.loci" } },
+          "contentName": "meta.embedded.block.cpp",
+          "patterns": [
+            { "include": "source.cpp" },
+            { "include": "#comments" },
+            { "include": "#strings" },
+            { "include": "#numbers" },
+            { "include": "#includes" },
+            { "include": "#ruleDecl" },
+            { "include": "#typeDecl" },
+            { "include": "#dollarIdentifiers" },
+            { "include": "#cppBlock" }
+          ]
+        }
+      ]
+    }
+  }
+}

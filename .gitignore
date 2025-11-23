@@ -1,0 +1,10 @@
+# Node dependencies and build output
+node_modules/
+out/
+
+# VSIX packages
+*.vsix
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
