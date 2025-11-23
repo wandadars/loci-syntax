@@ -1,6 +1,7 @@
 {
   "name": "loci-syntax",
   "displayName": "loci-syntax",
+  "publisher": "StreamlineNumerics",
   "description": "Syntax highlighting for the Loci DSL",
   "version": "0.1.0",
   "repository": {
