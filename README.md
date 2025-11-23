@@ -2,49 +2,23 @@
 
 Syntax highlighting for the Loci DSL used to describe rules, data dependencies, and computation steps in Loci-based applications.
 
-## Features
-- Highlights Loci directives and declarations such as `$include`, `$type` (directive), type names, storage kinds (`store`, `param`, `const_store`, etc.), and `$rule` forms (`pointwise`, `singleton`, `apply`, `unit`, `default`, `optional`).
-- Distinguishes rule modifiers and helpers: `constraint(...)`, `conditional(...)`, `option(...)`, `inplace(...)`, `prelude`/`postlude`, Loci reduction tags like `[Loci::Summation]`, and constants like `EMPTY`/`UNIVERSE`.
-- Marks `$`-prefixed variables (including indexed forms like `$temperature{n=0}`) and Loci namespace calls (`Loci::load_module`, `Loci::makeQuery`, etc.).
-- Supports `//` and `/* */` comments, string and numeric literals, and the `<-ci->`, `<-`, `->` arrows used in rule heads.
-- Loci scopes run first; unmatched content falls back to the built-in C++ grammar (especially inside `{ ... }` blocks) so mixed Loci/C++ stays readable without losing DSL highlighting.
+## What this extension highlights
+- Loci directives and declarations like `$include`, `$type`, type names, storage kinds (`store`, `param`, `const_store`, etc.), and `$rule` forms (`pointwise`, `singleton`, `apply`, `unit`, `default`, `optional`).
+- Rule modifiers and helpers: `constraint(...)`, `conditional(...)`, `option(...)`, `inplace(...)`, `prelude`/`postlude`, Loci reduction tags (`[Loci::Summation]`), constants like `EMPTY`/`UNIVERSE`.
+- `$`-prefixed variables (including `$variable{n=0}`) and Loci namespace calls (`Loci::load_module`, `Loci::makeQuery`, etc.).
+- Comments (`//`, `/* */`), string and numeric literals, and the `<-ci->`, `<-`, `->` arrows used in rule heads.
+- Mixed Loci/C++: unmatched content falls back to the built-in C++ grammar, especially inside `{ ... }` blocks.
 
-## Install
-- Prereqs: Node.js 20+ (needed for current `@vscode/vsce`), npm. If you’re stuck on Node 18, pin `npx @vscode/vsce@2.21.0 package` for packaging.
-1. After cloning: `npm install`
-2. Build once: `npm run compile` (or `npm run watch` while developing)
-3. Package (optional): `npx @vscode/vsce package` then `code --install-extension loci-syntax-*.vsix`
-4. Or run in an Extension Development Host with `F5` from VS Code.
+## Quick use
+- Install the extension, open a `.loci` file, and confirm the status bar shows **Loci DSL**. Colors come from your theme; this extension provides scopes.
+- If VS Code doesn’t auto-detect, switch the language mode to **Loci DSL** manually.
 
-## Run in VS Code
-- Open this folder in VS Code.
-- Press `Run and Debug` (or F5) and pick **Run Extension**; a new Extension Development Host window opens with the Loci syntax loaded.
-- Open a `.loci` file there (e.g., from `/home/wandadar/software/loci/...`) and confirm the status bar shows **Loci DSL**.
-- Colors come from your current VS Code theme; this extension just provides scopes.
-- Faster dev loop: in the main VS Code window run `npm install` once, then `npm run watch` to keep TypeScript output fresh. In another window use F5 to reload the Extension Development Host; hit the reload button there after edits to pick up grammar/TS changes.
-
-## Use
-- Open a `.loci` file; VS Code should select **Loci DSL** automatically. If not, switch the language mode manually.
-- The grammar ships with this extension (`syntaxes/loci.tmlLanguage.json`); no extra configuration is required.
-- Colors come from your current VS Code theme; this extension just provides scopes.
-
-## Package a VSIX (share/install locally)
-- Use Node 20+ (new `vsce` requires the global `File` API). If you must stay on Node 18, use `npx @vscode/vsce@2.21.0 package`.
-- Install deps and build, then package:
-```bash
-npm install
-npm run compile
-npx @vscode/vsce package
-```
-- This produces `loci-syntax-<version>.vsix` in the repo root. Install it with `code --install-extension loci-syntax-*.vsix`.
-- If `vsce` warns about a missing `repository` field, add your Git repo URL to `package.json` (recommended) or pass `--allow-missing-repository`.
-
-## Customize Loci colors (no GUI clicking)
-- Open your user settings JSON directly (no UI): run `Preferences: Open User Settings (JSON)` from the Command Palette, or edit the file on disk:
+## Customize Loci colors (manual theme override)
+- Open user settings JSON: `Preferences: Open User Settings (JSON)` or edit:
   - Linux: `$HOME/.config/Code/User/settings.json`
   - macOS: `$HOME/Library/Application Support/Code/User/settings.json`
   - Windows: `%APPDATA%\\Code\\User\\settings.json`
-- Add or merge this block (pure JSON, copy/paste safe) to force specific Loci token styling:
+- Add or merge:
 ```json
 "editor.tokenColorCustomizations": {
   "textMateRules": [
@@ -67,13 +41,12 @@ npx @vscode/vsce package
   ]
 }
 ```
-- VS Code accepts comments in `settings.json`, but if your editor flags them, keep the snippet above as-is (no `//` comments) and ensure it sits inside the top-level `{ ... }`. If you already have `editor.tokenColorCustomizations`, just merge the `textMateRules` entries.
-- Adjust colors to taste; these scopes come from `syntaxes/loci.tmlLanguage.json` and override your theme for Loci files.
+- Adjust colors to taste. These scopes come from `syntaxes/loci.tmlLanguage.json` and override your theme for Loci files.
 
 ## Rule anatomy (quick reference)
-- `$rule` keyword and rule kind (`pointwise`, `singleton`, etc.).
-- Rule head: outputs before the rightmost `<-`, inputs after it, arrow highlighted separately.
-- Trailing modifiers: `option(...)`, `constraint(...)`; `prelude`, `compute` markers.
+- `$rule` keyword and rule kind (`pointwise`, `singleton`, `apply`, `unit`, `default`, `optional`).
+- Rule head: outputs before the rightmost `<-`, inputs after it; the arrow is highlighted separately.
+- Trailing modifiers: `option(...)`, `constraint(...)`; markers like `prelude`, `compute`.
 
 ## Example
 ```loci
@@ -94,8 +67,24 @@ $rule apply(cl->qresidual<-qdot)[Loci::Summation],
 }
 ```
 
+---
+
+## Developer info (build, test, package)
+- Prereqs: Node.js 20+ (current `@vscode/vsce` needs the global `File` API), npm. If you must stay on Node 18, use `npx @vscode/vsce@2.21.0 package` when packaging.
+- Install deps: `npm install`
+- Build once: `npm run compile` (or `npm run watch` while developing)
+- Run in VS Code: open the folder, press **Run and Debug** (F5) and pick **Run Extension**; reload the Extension Development Host after edits. For a faster loop, run `npm run watch` in the main window while using F5 to reload.
+- Package a VSIX (share/install locally):
+```bash
+npm install
+npm run compile
+npx @vscode/vsce package
+```
+  - Outputs `loci-syntax-<version>.vsix`; install via `code --install-extension loci-syntax-*.vsix`.
+  - If `vsce` warns about a missing `repository` field, add your Git repo URL to `package.json` or pass `--allow-missing-repository`.
+
 ## Contributing
-- Add or adjust scopes in `syntaxes/loci.tmlLanguage.json`.
+- Adjust scopes in `syntaxes/loci.tmlLanguage.json`.
 - Update `language-configuration.json` if bracket or comment behavior changes.
 - Provide example snippets/screenshots in this README to showcase improvements.
 

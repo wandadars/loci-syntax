@@ -4,10 +4,10 @@
     { "include": "#comments" },
     { "include": "#strings" },
     { "include": "#numbers" },
+    { "include": "#dollarIdentifiers" },
     { "include": "#includes" },
     { "include": "#ruleDecl" },
     { "include": "#typeDecl" },
-    { "include": "#dollarIdentifiers" },
     { "include": "#cppBlock" }
   ],
   "repository": {
@@ -208,6 +208,7 @@
           "endCaptures": { "0": { "name": "punctuation.section.block.end.loci" } },
           "contentName": "meta.embedded.block.cpp",
           "patterns": [
+            { "include": "#dollarIdentifiers" },
             { "include": "source.cpp" },
             { "include": "#comments" },
             { "include": "#strings" },
